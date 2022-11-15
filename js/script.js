@@ -88,7 +88,6 @@ function generateTags(){
     for(let tag in allTags){
       allTagsHTML += tag + '(' + allTags[tag] + ') ';
     }
-    console.log(allTagsHTML);
     tagList.innerHTML = allTagsHTML;
   }
   /* find tags wrapper */
