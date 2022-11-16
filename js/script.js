@@ -30,6 +30,9 @@ const optArticleSelector = '.post',
 const optArticleTagsSelector = '.post-tags .list';
 const optArticleAuthorSelector = '.post-author';
 const optTagListSelector = '.sidebar .tags';
+const optCloudClassCount = 5;
+const optCloudClassPrefix = 'tag-size-';
+
 function generateTitleLinks(customSelector = ''){
 
   /* remove contents of titleList */
@@ -62,6 +65,28 @@ function generateTitleLinks(customSelector = ''){
   }
 }
 
+function calculateTagsParams(tags){
+  const params = {'min': 999999,'max': 0};
+
+  for(let tag in tags){
+    //console.log(tag + ' is used ' + tags[tag] + ' times');
+    params.max = Math.max(tags[tag], params.max);
+    params.min = Math.min(tags[tag], params.min);
+  }
+
+  return params;
+}
+
+function calculateTagClass(count,params){
+  const normalizedCount = count - params.min;
+  const normalizedMax = params.max - params.min;
+  const percentage = (normalizedCount / normalizedMax);
+  const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
+
+  return optCloudClassPrefix + classNumber;
+
+}
+
 function generateTags(){
   let allTags = {};
   /* find all articles */
@@ -72,7 +97,7 @@ function generateTags(){
     let html = '';
     const articleTags = article.getAttribute('data-tags');
     const articleTagsArray = articleTags.split(' ');
-    for(let tag of articleTagsArray){
+    for(let tag of articleTagsArray){      
       const linkHTML = '<li><a href="#tag-'+ tag +'">' +tag+ '</a></li>';
       html = html + linkHTML;
       if(!allTags.hasOwnProperty(linkHTML)){
@@ -82,14 +107,21 @@ function generateTags(){
       }
     }
     tagWrapper.innerHTML = html;
-    const tagList = document.querySelector(optTagListSelector);
-
-    let allTagsHTML = '';
-    for(let tag in allTags){
-      allTagsHTML += tag + '(' + allTags[tag] + ') ';
-    }
-    tagList.innerHTML = allTagsHTML;
   }
+  const tagList = document.querySelector(optTagListSelector);
+
+  const tagsParams = calculateTagsParams(allTags);
+
+  let allTagsHTML = '';
+  for(let tag in allTags){
+    console.log("🚀 ~ file: script.js ~ line 117 ~ generateTags ~ tag", tag);
+    
+    //const tagLinkHTML = '<li class="'+ calculateTagClass(allTags[tag],tagsParams) +'">'+ tag + '(' + allTags[tag] + ')</li>';
+    const tagLinkHTML = '<li><a href="" class="'+ calculateTagClass(allTags[tag],tagsParams) +'"></a></li>';   
+    allTagsHTML += tagLinkHTML;
+  }
+  tagList.innerHTML = allTagsHTML;
+  
   /* find tags wrapper */
 
   /* make html variable with empty string */
