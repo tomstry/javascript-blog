@@ -111,13 +111,12 @@ function generateTags(){
   const tagList = document.querySelector(optTagListSelector);
 
   const tagsParams = calculateTagsParams(allTags);
-
+  
   let allTagsHTML = '';
   for(let tag in allTags){
-    console.log("🚀 ~ file: script.js ~ line 117 ~ generateTags ~ tag", tag);
-    
-    //const tagLinkHTML = '<li class="'+ calculateTagClass(allTags[tag],tagsParams) +'">'+ tag + '(' + allTags[tag] + ')</li>';
-    const tagLinkHTML = '<li><a href="" class="'+ calculateTagClass(allTags[tag],tagsParams) +'"></a></li>';   
+    const href = tag.match(/href="([^"]*)/)[1];
+    const tagname = href.replace('#tag-','');
+    const tagLinkHTML = '<li><a href="'+ href +'" class="'+ calculateTagClass(allTags[tag],tagsParams) +'">'+ tagname +'</a> (' + allTags[tag] + ')</li>';
     allTagsHTML += tagLinkHTML;
   }
   tagList.innerHTML = allTagsHTML;
